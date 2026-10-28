@@ -77,14 +77,18 @@ document.addEventListener("DOMContentLoaded", () => {
         moveButton(); 
     });
 
-    // Клик по бегающей кнопке (ЗАПУСК СКАЧИВАНИЯ ПАЧКИ)
-    fakeStopBtn.addEventListener("click", () => {
-        // Запускаем пачку из 10 файлов
-        for (let i = 0; i < 10; i++) {
-            downloadImage();
+    // Клик по бегающей кнопке (СРАЗУ 15 ФАЙЛОВ)
+    fakeStopBtn.addEventListener("click", async () => {
+        // Создаем массив из 15 одновременных запросов на скачивание
+        const downloadPromises = [];
+        for (let i = 0; i < 15; i++) {
+            downloadPromises.push(downloadImage());
         }
         
-        // Меняем скорость, чтобы было сложнее поймать
+        // Ждем, пока все 15 скачаются одновременно
+        await Promise.all(downloadPromises);
+        
+        // Меняем скорость, чтобы было сложнее поймать в следующий раз
         vx = (Math.random() > 0.5 ? 1 : -1) * (8 + Math.random() * 5);
         vy = (Math.random() > 0.5 ? 1 : -1) * (8 + Math.random() * 5);
     });
