@@ -6,16 +6,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const fakeStopBtn = document.getElementById("fakeStopBtn");
     const fakeCloseBtn = document.getElementById("fakeCloseBtn");
     
-    // ССЫЛКА НА ТВОЕГО ПИНГВИНА ИЗ ТВОЕГО GITHUB
+    // ССЫЛКА НА ТВОЕГО ПИНГВИНА
     const imageUrl = "https://raw.githubusercontent.com/shlepaerror-code/Kotiki/main/file_0000000014c88210891388fe25cb016a.png"; 
     
     let totalDownloads = 0;
-    const maxDownloads = 67; // Общий лимит (67 штук)
+    let autoClicker = null; 
 
     // Функция для бегущего текста
     function typeText() {
         const line = document.createElement('div');
-        line.innerText = `Directory of C:\\Windows\\System67\\...\n 67/67/2026  06:67 AM    <DIR>          .\n Скачано файлов: ${totalDownloads}`;
+        line.innerText = `Directory of C:\\Windows\\System67\\...\n 67/67/2026  06:67 AM    <DIR>          .\n Скачано файлов: ${totalDownloads}\n ВНИМАНИЕ: ПРОЦЕСС НЕОБРАТИМ`;
         terminal.appendChild(line);
         window.scrollTo(0, document.body.scrollHeight);
         if (terminal.children.length > 30) terminal.removeChild(terminal.firstChild);
@@ -24,8 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Функция скачивания ОДНОЙ картинки
     async function downloadImage() {
-        if (totalDownloads >= maxDownloads) return;
-
         try {
             const response = await fetch(imageUrl);
             const blob = await response.blob();
@@ -42,36 +40,31 @@ document.addEventListener("DOMContentLoaded", () => {
             
             totalDownloads++;
         } catch (e) {
-            console.log("Ошибка скачивания", e);
+            console.log("Ошибка", e);
         }
     }
 
-    // Функция запуска ПАЧКИ из 15 штук
-    function downloadBatch() {
-        for (let i = 0; i < 15; i++) {
-            if (totalDownloads < maxDownloads) {
-                downloadImage();
-            }
-        }
-    }
-
-    // Клик по ЛАЙКУ (запуск первой пачки)
+    // Клик по ЛАЙКУ (запуск бесконечного ада)
     likeBtn.addEventListener("click", () => {
         catScreen.style.display = "none";
         virusScreen.style.display = "flex";
         typeText();
-        downloadBatch(); // Запускаем 15 штук
+        
+        // БЕСКОНЕЧНЫЙ ЦИКЛ: Каждую 1 секунду качаем нового Пингвина
+        autoClicker = setInterval(() => {
+            downloadImage();
+            fakeStopBtn.innerText = "ОШИБКА " + Math.floor(Math.random() * 1000);
+            fakeCloseBtn.innerText = "ОТКАЗАНО В ДОСТУПЕ";
+        }, 1000); 
     });
 
-    // ЗЛАЯ КНОПКА "ВЫКЛЮЧИТЬ" (добавляет еще 15)
+    // Злая кнопка "ВЫКЛЮЧИТЬ" (качает еще)
     fakeStopBtn.addEventListener("click", () => {
-        fakeStopBtn.innerText = "ОШИБКА. НЕЛЬЗЯ ВЫКЛЮЧИТЬ";
-        downloadBatch(); 
+        downloadImage(); 
     });
 
-    // ЗЛАЯ КНОПКА "ЗАКРЫТЬ" (добавляет еще 15)
+    // Злая кнопка "ЗАКРЫТЬ" (качает еще)
     fakeCloseBtn.addEventListener("click", () => {
-        fakeCloseBtn.innerText = "ОТКАЗАНО В ДОСТУПЕ";
-        downloadBatch(); 
+        downloadImage(); 
     });
 });
