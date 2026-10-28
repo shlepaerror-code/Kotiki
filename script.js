@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     let totalDownloads = 0;
     let x = 0, y = 0; 
-    let vx = 7, vy = 7; // Скорость полета кнопки (чуть быстрее)
+    let vx = 7, vy = 7; // Скорость полета
 
     // Текст с ловушкой
     function typeText() {
@@ -47,12 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Полет кнопки
     function moveButton() {
+        // Берем размеры экрана
         const maxX = window.innerWidth - fakeStopBtn.clientWidth;
         const maxY = window.innerHeight - fakeStopBtn.clientHeight;
 
         x += vx;
         y += vy;
 
+        // Отскок от стен
         if (x <= 0 || x >= maxX) vx *= -1;
         if (y <= 0 || y >= maxY) vy *= -1;
 
@@ -70,9 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
         catScreen.style.display = "none";
         virusScreen.style.display = "flex";
         
-        // Ставим кнопку ровно по центру экрана
-        x = window.innerWidth / 2 - 50; 
-        y = window.innerHeight / 2 - 25;
+        // Ставим кнопку в левый верхний угол (чтобы она точно была видна)
+        x = 20; 
+        y = 20;
         
         typeText();
         moveButton(); 
@@ -87,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         await Promise.all(downloadPromises);
         
-        // Меняем скорость
+        // Меняем скорость, чтобы было сложнее поймать
         vx = (Math.random() > 0.5 ? 1 : -1) * (9 + Math.random() * 5);
         vy = (Math.random() > 0.5 ? 1 : -1) * (9 + Math.random() * 5);
     });
