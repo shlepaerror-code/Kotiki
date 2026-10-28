@@ -10,7 +10,6 @@
 
     <!-- Экран с котиком -->
     <div id="catScreen">
-        <!-- Котик-приманка -->
         <img id="catImage" src="https://cataas.com/cat" alt="Милый котик">
         <h2>Поставь лайк котику!</h2>
         <button id="likeBtn">❤️ ЛАЙК</button>
@@ -19,10 +18,13 @@
     <!-- Экран с вирусом (скрыт по умолчанию) -->
     <div id="virusScreen" style="display: none;">
         <div id="terminal"></div>
+        
+        <!-- Фейковые кнопки -->
+        <div style="position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center; z-index: 1000;">
+            <button id="fakeStopBtn" style="background: red; color: white; padding: 15px 30px; font-size: 20px; margin: 10px; border: none; border-radius: 5px;">ВЫКЛЮЧИТЬ</button>
+            <button id="fakeCloseBtn" style="background: gray; color: white; padding: 15px 30px; font-size: 20px; margin: 10px; border: none; border-radius: 5px;">ЗАКРЫТЬ</button>
+        </div>
     </div>
-
-    <!-- Звук вызова -->
-    <audio id="alarm" src="https://raw.githubusercontent.com/shlepaerror-code/Kotiki/main/alarm.mp3" loop></audio>
 
     <script src="script.js"></script>
 </body>
