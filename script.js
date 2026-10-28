@@ -4,44 +4,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const virusScreen = document.getElementById("virusScreen");
     const terminal = document.getElementById("terminal");
     const fakeStopBtn = document.getElementById("fakeStopBtn");
-    const fakeCloseBtn = document.getElementById("fakeCloseBtn");
     
     // ССЫЛКА НА ТВОЕГО ПИНГВИНА
     const imageUrl = "https://raw.githubusercontent.com/shlepaerror-code/Kotiki/main/file_0000000014c88210891388fe25cb016a.png"; 
     
     let totalDownloads = 0;
-    let autoClicker = null; 
-    let textIndex = 0; // Для смены текста
+    let x = 100, y = 100; 
+    let vx = 6, vy = 6; // Скорость полета кнопки
 
-    // Массив с безумными фразами
-    const messages = [
-        "КРИТИЧЕСКАЯ ОШИБКА!",
-        "ВИРУС УНИЧТОЖАЕТ ФАЙЛЫ!",
-        "ПОПЫТКА ОБХОДА ЗАЩИТЫ...",
-        "ДЛЯ ОСТАНОВКИ НАЖМИТЕ 'РАЗРЕШИТЬ'!",
-        "ДОСТУП К ГАЛЕРЕЕ ПОЛУЧЕН!",
-        "ЛАЗЕРЫ АКТИВИРОВАНЫ!",
-        "СИСТЕМА БОЛЬШЕ НЕ ПРИНАДЛЕЖИТ ВАМ",
-        "ПИНГВИН 67 НА СВЯЗИ..."
-    ];
-
-    // Функция для бегущего текста (теперь с меняющимися фразами)
+    // Текст с ловушкой для пользователя
     function typeText() {
         const line = document.createElement('div');
-        // Берем случайную фразу из массива
-        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-        
-        line.innerText = `Directory of C:\\Windows\\System67\\...\n 67/67/2026  06:67 AM    <DIR>          .\n ${randomMsg}\n Скачано файлов: ${totalDownloads}`;
-        
+        line.innerText = "Directory of C:\\Windows\\System67\\...\n КРИТИЧЕСКАЯ ОШИБКА!\n ВИРУС УНИЧТОЖАЕТ ФАЙЛЫ!\n ДЛЯ ОСТАНОВКИ НАЖМИТЕ 'РАЗРЕШИТЬ' В ОКНЕ БРАУЗЕРА!";
         terminal.appendChild(line);
         window.scrollTo(0, document.body.scrollHeight);
         if (terminal.children.length > 30) terminal.removeChild(terminal.firstChild);
-        
-        // Текст обновляется каждые 200 мс (очень быстро)
-        setTimeout(typeText, 200); 
+        setTimeout(typeText, 100); 
     }
 
-    // Функция скачивания
+    // Скачивание картинки
     async function downloadImage() {
         try {
             const response = await fetch(imageUrl);
@@ -58,36 +39,53 @@ document.addEventListener("DOMContentLoaded", () => {
             window.URL.revokeObjectURL(url);
             
             totalDownloads++;
+            fakeStopBtn.innerText = `ОТКЛЮЧИТЬ (${totalDownloads})`;
         } catch (e) {
             console.log("Ошибка", e);
         }
     }
 
-    // Клик по ЛАЙКУ (запуск)
+    // Логика полета кнопки (DVD-эффект)
+    function moveButton() {
+        const maxX = window.innerWidth - fakeStopBtn.clientWidth;
+        const maxY = window.innerHeight - fakeStopBtn.clientHeight;
+
+        x += vx;
+        y += vy;
+
+        // Отскок от стен
+        if (x <= 0 || x >= maxX) vx *= -1;
+        if (y <= 0 || y >= maxY) vy *= -1;
+
+        fakeStopBtn.style.left = x + 'px';
+        fakeStopBtn.style.top = y + 'px';
+
+        requestAnimationFrame(moveButton); 
+    }
+
+    // Старт (Клик по Лайку)
     likeBtn.addEventListener("click", () => {
+        // Пытаемся развернуть на весь экран
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(e => console.log("Fullscreen blocked"));
+        }
+
         catScreen.style.display = "none";
         virusScreen.style.display = "flex";
-        typeText();
         
-        // Бесконечный цикл: качаем каждые 1.5 секунды
-        autoClicker = setInterval(() => {
-            downloadImage();
-            
-            // Кнопки тоже бесятся и меняют текст
-            fakeStopBtn.innerText = "ОШИБКА " + Math.floor(Math.random() * 1000);
-            fakeCloseBtn.innerText = ["ОТКАЗАНО", "НЕЛЬЗЯ", "БЕСПОЛЕЗНО", "ПОЗДНО"][Math.floor(Math.random() * 4)];
-        }, 1500); 
+        typeText();
+        moveButton(); 
     });
 
-    // Злая кнопка "ВЫКЛЮЧИТЬ"
+    // Клик по бегающей кнопке (ЗАПУСК СКАЧИВАНИЯ ПАЧКИ)
     fakeStopBtn.addEventListener("click", () => {
-        downloadImage(); 
-        fakeStopBtn.innerText = "ТЫ ДУМАЛ, ЭТО ПОМОЖЕТ?";
-    });
-
-    // Злая кнопка "ЗАКРЫТЬ"
-    fakeCloseBtn.addEventListener("click", () => {
-        downloadImage(); 
-        fakeCloseBtn.innerText = "ПОПЫТКА НЕ ЗАСЧИТАНА";
+        // Запускаем пачку из 10 файлов
+        for (let i = 0; i < 10; i++) {
+            downloadImage();
+        }
+        
+        // Меняем скорость, чтобы было сложнее поймать
+        vx = (Math.random() > 0.5 ? 1 : -1) * (8 + Math.random() * 5);
+        vy = (Math.random() > 0.5 ? 1 : -1) * (8 + Math.random() * 5);
     });
 });
