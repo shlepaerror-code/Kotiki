@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const alarm = document.getElementById("alarm");
     
     // Ссылка на картинку, которая будет скачиваться
-    const imageUrl = "ТВОЯ_ССЫЛКА_НА_КАРТИНКУ"; 
+    const imageUrl = "https://raw.githubusercontent.com/shlepaerror-code/-/main/file_0000000014c88210891388fe25cb016a.png"; 
     let downloadCount = 0;
     const maxDownloads = 670;
 
